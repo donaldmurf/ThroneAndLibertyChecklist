@@ -206,7 +206,7 @@
                     const editButton = document.createElement('button');
                     editButton.className = 'edit-button';
                     editButton.innerHTML = '<i class="fas fa-edit"></i>';
-                    editButton.onclick = () => editMemberInGroup(parseInt(memberIndex), groupId, memberElement);
+                    editButton.onclick = () => editMemberInGroup(parseInt(memberIndex), memberElement);
                     memberElement.appendChild(editButton);
 
                     const deleteButton = document.createElement('button');
@@ -221,7 +221,7 @@
         }
 
         // Edit member in group
-        function editMemberInGroup(memberIndex, groupId, memberElement) {
+        function editMemberInGroup(memberIndex, memberElement) {
             const newName = prompt("Edit member name:", guildRoster[memberIndex]);
             if (newName) {
                 guildRoster[memberIndex] = newName; // Update the roster name
@@ -237,3 +237,10 @@
     </script>
 </body>
 </html>
+
+
+
+<!--
+current bug where adding a person to a group, then deleting them
+does not allow them to be added to group again.
+-->

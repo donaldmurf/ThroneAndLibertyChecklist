@@ -4,46 +4,237 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Throne & Liberty Task List</title>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <style>
-        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; }
         h1 { text-align: center; font-size: 2.5em; color: #e0e0e0; margin-bottom: 20px; font-weight: 700; letter-spacing: 1px; }
         .container { background-color: #2c2c2f; border-radius: 10px; padding: 20px; max-width: 1000px; width: 100%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
-        .checklist-container { display: flex; justify-content: space-between; }
-        .checklist { width: 48%; background-color: #333336; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-        h2 { font-size: 1.7em; color: #f5f5f5; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; font-weight: 600; }
-        .task-container { display: flex; align-items: center; justify-content: space-between; background-color: #1e1e20; border-radius: 5px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
-        .task-text { margin-left: 10px; flex: 1; color: #d9d9da; }
-        .edit-button, .delete-button { background: none; border: none; cursor: pointer; color: #a0a0a5; font-size: 1.2em; margin-left: 10px; transition: color 0.2s; }
-        .edit-button:hover { color: #f1c40f; }
-        .delete-button:hover { color: #e74c3c; }
-        .add-task-button { background: #f1c40f; color: #1d1d1f; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transition: background-color 0.3s; }
-        .add-task-button:hover { background-color: #c49b0b; }
-        .timer { font-size: 1.2em; color: #bbbbbb; text-align: center; margin-bottom: 10px; }
+        .character-name { margin-bottom: 20px; }
+        .input-field { width: calc(100% - 40px); padding: 10px; border: 1px solid #444; border-radius: 5px; }
+        .save-button { background-color: #f1c40f; color: #1d1d1f; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+        .task-table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
+        th, td { padding: 10px; border: 1px solid #444; text-align: left; }
+        th { background-color: #333336; color: #f5f5f5; }
+        td { background-color: #1e1e20; color: #d9d9da; }
+        .status { display: none; }
+        .task-row { cursor: pointer; }
+        .highlight { background-color: #28a745; }
+        .color-checkbox { margin-left: 10px; }
+        .request-count { cursor: pointer; color: #f1c40f; }
+        .add-button, .delete-button { background-color: #e74c3c; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
-
 <body>
-    <div class=""container">
-    <h1>Home page</h1>
-        <a href="https://donaldmurf.github.io/TL_daily.html">Daily Check list</a>
+
+    <h1>Throne & Liberty Task List</h1>
+    <div class="container">
+        <div class="character-name">
+            <input type="text" id="characterInput" class="input-field" placeholder="Enter Character Name">
+            <button id="saveButton" class="save-button">Save</button>
+            <div id="statusMessage" class="status"></div>
+        </div>
+        
+        <table class="task-table" id="taskTable">
+            <thead>
+                <tr>
+                    <th>Item Number</th>
+                    <th>Item</th>
+                    <th>Color</th>
+                    <th>Category</th>
+                    <th>Trait</th>
+                    <th>Acquirer</th>
+                    <th>Request Count</th>
+                    <th>Bid Time Window</th>
+                    <th>Request</th>
+                </tr>
+            </thead>
+            <tbody id="taskBody">
+                <tr>
+                    <td>1</td>
+                    <td>
+                        <input type="text" placeholder="Item Name" class="item-name-input">
+                    </td>
+                    <td>
+                        <select class="color-select">
+                            <option value="">Select Color</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="category-select">
+                            <option value="">Select Category</option>
+                            <option value="Weapon">Weapon</option>
+                            <option value="Armor">Armor</option>
+                            <option value="Accessory">Accessory</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="trait-select">
+                            <option value="">Select Trait</option>
+                        </select>
+                    </td>
+                    <td><input type="text" placeholder="Acquirer Name" class="acquirer-name"></td>
+                    <td class="request-count" onclick="showRequesters(this)">0</td>
+                    <td class="bid-time-cell">-</td>
+                    <td>
+                        <button class="request-button" data-request-type="New Trait">New Trait</button>
+                        <button class="request-button" data-request-type="New Gear Piece">New Gear Piece</button>
+                        <button class="request-button" data-request-type="Upgrade Trait">Upgrade Trait</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="addButton" class="add-button">Add Item</button>
     </div>
+
+    <script>
+        const characterInput = document.getElementById('characterInput');
+        const saveButton = document.getElementById('saveButton');
+        const statusMessage = document.getElementById('statusMessage');
+        const taskTable = document.getElementById('taskTable');
+        const taskBody = document.getElementById('taskBody');
+        const addButton = document.getElementById('addButton');
+
+        const traits = {
+            Weapon: ["Heavy Attack Chance", "Hit", "Critical Hit", "Cooldown Speed", "Max Health", "Attack Speed"],
+            Armor: ["Melee Evasion", "Ranged Evasion", "Magic Evasion", "Melee Endurance", "Ranged Endurance", "Magic Endurance", "Max Health", "Mana Regen (PvE)", "Cooldown Speed", "Attack Speed (Gloves Only)", "Move Speed (Boots Only)", "Buff Duration", "Debuff Duration"],
+            Accessory: ["Skill Damage Boost", "Skill Damage Resistance", "Max Health", "Buff Duration", "Debuff Duration", "Silence Resistance", "Collision Resistance", "Bind Resistance"]
+        };
+
+        let requesterName = '';
+
+        saveButton.addEventListener('click', function() {
+            const name = characterInput.value.trim();
+            if (name) {
+                statusMessage.textContent = "Character name accepted!";
+                statusMessage.style.color = 'green';
+                statusMessage.style.display = 'block';
+                characterInput.style.backgroundColor = 'lightgreen';
+                requesterName = name; // Store the requester name
+                taskTable.style.display = 'table';
+                taskTable.querySelectorAll('.item-name-input').forEach(input => {
+                    input.disabled = false;
+                });
+                taskTable.querySelectorAll('.trait-select, select:nth-child(3)').forEach(select => {
+                    select.disabled = false;
+                });
+                populateTraits();
+            } else {
+                statusMessage.textContent = "Please enter a valid character name.";
+                statusMessage.style.color = 'red';
+                statusMessage.style.display = 'block';
+            }
+        });
+
+        function populateTraits() {
+            const categorySelects = document.querySelectorAll('.category-select');
+            categorySelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const selectedCategory = this.value;
+                    const traitSelect = this.closest('tr').querySelector('.trait-select');
+                    traitSelect.innerHTML = `<option value="">Select Trait</option>`;
+                    if (traits[selectedCategory]) {
+                        traits[selectedCategory].forEach(trait => {
+                            traitSelect.innerHTML += `<option value="${trait}">${trait}</option>`;
+                        });
+                    }
+                });
+            });
+        }
+
+        taskTable.addEventListener('change', function(event) {
+            if (event.target.classList.contains('color-select')) {
+                const selectedColor = event.target.value;
+                const itemNameInput = event.target.closest('tr').querySelector('.item-name-input');
+                itemNameInput.style.color = selectedColor; // Change text color based on selection
+            }
+        });
+
+        taskTable.addEventListener('click', function(event) {
+            if (event.target.classList.contains('request-button')) {
+                const requestType = event.target.getAttribute('data-request-type');
+                const row = event.target.closest('tr');
+                const requestCountCell = row.querySelector('.request-count');
+
+                // Ask for confirmation before incrementing the count
+                const confirmation = confirm(`Are you sure you want to request this item?`);
+                if (confirmation) {
+                    let requestCount = parseInt(requestCountCell.textContent) + 1;
+                    requestCountCell.textContent = requestCount;
+
+                    // Show the request type with requester name
+                    const acquirerName = row.querySelector('.acquirer-name').value || requesterName;
+                    requestCountCell.textContent += ` - ${acquirerName} - ${requestType}`;
+                }
+            }
+        });
+
+        addButton.addEventListener('click', function() {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${taskBody.children.length + 1}</td>
+                <td><input type="text" placeholder="Item Name" class="item-name-input"></td>
+                <td>
+                    <select class="color-select">
+                        <option value="">Select Color</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="category-select">
+                        <option value="">Select Category</option>
+                        <option value="Weapon">Weapon</option>
+                        <option value="Armor">Armor</option>
+                        <option value="Accessory">Accessory</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="trait-select">
+                        <option value="">Select Trait</option>
+                    </select>
+                </td>
+                <td><input type="text" placeholder="Acquirer Name" class="acquirer-name"></td>
+                <td class="request-count" onclick="showRequesters(this)">0</td>
+                <td class="bid-time-cell">-</td>
+                <td>
+                    <button class="request-button" data-request-type="New Trait">New Trait</button>
+                    <button class="request-button" data-request-type="New Gear Piece">New Gear Piece</button>
+                    <button class="request-button" data-request-type="Upgrade Trait">Upgrade Trait</button>
+                </td>
+            `;
+            taskBody.appendChild(newRow);
+            populateTraits(); // Re-initialize traits for the new row
+        });
+
+        function showRequesters(cell) {
+            const requestCountText = cell.textContent;
+            if (requestCountText) {
+                alert(`Requests: ${requestCountText}`);
+            } else {
+                alert('No requests made yet.');
+            }
+        }
+
+        // To delete an item row
+        taskBody.addEventListener('click', function(event) {
+            if (event.target.classList.contains('delete-button')) {
+                const row = event.target.closest('tr');
+                row.remove();
+                updateItemNumbers();
+            }
+        });
+
+        function updateItemNumbers() {
+            const rows = taskBody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1; // Update item number
+            });
+        }
+    </script>
 </body>
+</html>

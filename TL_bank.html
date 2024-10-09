@@ -5,37 +5,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Throne & Liberty Task List</title>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        h1 { text-align: center; font-size: 2.5em; color: #e0e0e0; margin-bottom: 20px; font-weight: 700; letter-spacing: 1px; }
-        .container { background-color: #2c2c2f; border-radius: 10px; padding: 20px; max-width: 1000px; width: 100%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
-        .checklist-container { display: flex; justify-content: space-between; }
-        .checklist { width: 48%; background-color: #333336; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-        h2 { font-size: 1.7em; color: #f5f5f5; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; font-weight: 600; }
-        .task-container { display: flex; align-items: center; justify-content: space-between; background-color: #1e1e20; border-radius: 5px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
-        .task-text { margin-left: 10px; flex: 1; color: #d9d9da; }
-        .edit-button, .delete-button { background: none; border: none; cursor: pointer; color: #a0a0a5; font-size: 1.2em; margin-left: 10px; transition: color 0.2s; }
-        .edit-button:hover { color: #f1c40f; }
-        .delete-button:hover { color: #e74c3c; }
-        .add-task-button { background: #f1c40f; color: #1d1d1f; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transition: background-color 0.3s; }
-        .add-task-button:hover { background-color: #c49b0b; }
-        .timer { font-size: 1.2em; color: #bbbbbb; text-align: center; margin-bottom: 10px; }
+        body { 
+            font-family: 'Cinzel', serif; 
+            background-color: #1d1d1f; 
+            color: #f0f0f0; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 2.5em; 
+            color: #e0e0e0; 
+            margin-bottom: 20px; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+        }
+        .container { 
+            background-color: #2c2c2f; 
+            border-radius: 10px; 
+            padding: 20px; 
+            width: 100%; 
+            max-width: 1200px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); 
+        }
+        .task-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 20px; 
+        }
+        th, td { 
+            padding: 10px; 
+            border: 1px solid #444; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #333; 
+        }
+        .add-button { 
+            background: #f1c40f; 
+            color: #1d1d1f; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 20px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+            display: block; 
+            margin: 0 auto; 
+        }
+        .add-button:hover { 
+            background-color: #c49b0b; 
+        }
+        .color-select { 
+            width: auto; 
+        }
     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Throne & Liberty Task List</h1>
+        
+        <input type="text" id="characterName" placeholder="Enter Character Name" />
+        <button id="saveCharacterName">Save</button>
+
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>Item Number</th>
+                    <th>Item</th>
+                    <th>Color</th>
+                    <th>Category</th>
+                    <th>Trait</th>
+                    <th>Acquirer Name</th>
+                    <th>Request Count</th>
+                    <th>Bid Time</th>
+                    <th>Requests</th>
+                </tr>
+            </thead>
+            <tbody id="taskBody">
+                <!-- Task rows will be added here -->
+            </tbody>
+        </table>
+        <button class="add-button" id="addItemButton">Add Item</button>
+    </div>
+
+    <script>
+        const characterNameInput = document.getElementById('characterName');
+        const saveCharacterNameButton = document.getElementById('saveCharacterName');
+        const taskBody = document.getElementById('taskBody');
+        const addItemButton = document.getElementById('addItemButton');
+        let characterName = '';
+
+        saveCharacterNameButton.addEventListener('click', function() {
+            characterName = characterNameInput.value;
+            if (characterName) {
+                characterNameInput.style.backgroundColor = 'green';
+                characterNameInput.disabled = true; // Disable input after name is accepted
+                addItemButton.style.display = 'block'; // Show the add item button
+            }
+        });
+
+        addItemButton.addEventListener('click', function() {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${taskBody.children.length + 1}</td>
+                <td><input type="text" placeholder="Item Name" class="item-name-input"></td>
+                <td>
+                    <select class="color-select" onchange="changeColor(this)">
+                        <option value="">Select Color</option>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="purple">Purple</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="category-select" onchange="populateTraits(this)">
+                        <option value="">Select Category</option>
+                        <option value="Weapon">Weapon</option>
+                        <option value="Armor">Armor</option>
+                        <option value="Accessory">Accessory</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="trait-select">
+                        <option value="">Select Trait</option>
+                    </select>
+                </td>
+                <td><input type="text" placeholder="Acquirer Name" class="acquirer-name"></td>
+                <td class="request-count" onclick="showRequesters(this)">0</td>
+                <td class="bid-time-cell">-</td>
+                <td>
+                    <button class="request-button" data-request-type="New Trait" onclick="handleRequest(this)">New Trait</button>
+                    <button class="request-button" data-request-type="New Gear Piece" onclick="handleRequest(this)">New Gear Piece</button>
+                    <button class="request-button" data-request-type="Upgrade Trait" onclick="handleRequest(this)">Upgrade Trait</button>
+                </td>
+            `;
+            taskBody.appendChild(newRow);
+            populateTraits(newRow.querySelector('.category-select')); // Initialize traits for the new row
+        });
+
+        function changeColor(select) {
+            const itemNameInput = select.closest('tr').querySelector('.item-name-input');
+            itemNameInput.style.color = select.value; // Change the color of the item name based on selection
+        }
+
+        function populateTraits(categorySelect) {
+            const traitSelect = categorySelect.closest('tr').querySelector('.trait-select');
+            const category = categorySelect.value;
+            let traits = [];
+            if (category === 'Weapon') {
+                traits = ['Heavy Attack Chance', 'Hit', 'Critical Hit', 'Cooldown Speed', 'Max Health', 'Attack Speed'];
+            } else if (category === 'Armor') {
+                traits = ['Melee Evasion', 'Ranged Evasion', 'Magic Evasion', 'Melee Endurance', 'Ranged Endurance', 'Magic Endurance', 'Max Health', 'Mana Regen (PvE)', 'Cooldown Speed', 'Attack Speed (Gloves Only)', 'Move Speed (Boots Only)', 'Buff Duration', 'Debuff Duration'];
+            } else if (category === 'Accessory') {
+                traits = ['Skill Damage Boost', 'Skill Damage Resistance', 'Max Health', 'Buff Duration', 'Debuff Duration', 'Silence Resistance', 'Collision Resistance', 'Bind Resistance'];
+            }
+
+            traitSelect.innerHTML = '<option value="">Select Trait</option>' + traits.map(trait => `<option value="${trait}">${trait}</option>`).join('');
+        }
+
+        function showRequesters(cell) {
+            const requestCountText = cell.textContent;
+            if (requestCountText) {
+                alert(`Requests: ${requestCountText}`);
+            } else {
+                alert('No requests made yet.');
+            }
+        }
+
+        function handleRequest(button) {
+            const row = button.closest('tr');
+            const itemName = row.querySelector('.item-name-input').value;
+            const acquirerName = row.querySelector('.acquirer-name').value;
+            const requestType = button.getAttribute('data-request-type');
+            const requestCountCell = row.querySelector('.request-count');
+
+            if (itemName && acquirerName) {
+                const requestCount = parseInt(requestCountCell.textContent) || 0;
+                requestCountCell.textContent = requestCount + 1;
+                alert(`${characterName} requested "${requestType}" for "${itemName}" (Requested by: ${acquirerName})`);
+            } else {
+                alert('Please enter both item name and acquirer name before requesting.');
+            }
+        }
+    </script>
+</body>
+</html>
