@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throne & Liberty Task List</title>
+Expand
+message.txt
+12 KB
+https://taltasks.netlify.app/
+Kruptid — Yesterday at 6:08 PM
+fixed it
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throne & Liberty Task List</title>
+Expand
+index.html
+10 KB
+as far as i am concerned this is ready for publish
+but i would love your input
+﻿
+Kruptid
+kruptid.
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Throne & Liberty Task List</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        h1 { text-align: center; font-size: 2.5em; color: #e0e0e0; margin-bottom: 20px; font-weight: 700; letter-spacing: 1px; }
+        .container { background-color: #2c2c2f; border-radius: 10px; padding: 20px; max-width: 1000px; width: 100%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
+        .checklist-container { display: flex; justify-content: space-between; }
+        .checklist { width: 48%; background-color: #333336; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+        h2 { font-size: 1.7em; color: #f5f5f5; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; font-weight: 600; }
+        .task-container { display: flex; align-items: center; justify-content: space-between; background-color: #1e1e20; border-radius: 5px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+        .task-text { margin-left: 10px; flex: 1; color: #d9d9da; }
+        .edit-button, .delete-button { background: none; border: none; cursor: pointer; color: #a0a0a5; font-size: 1.2em; margin-left: 10px; transition: color 0.2s; }
+        .edit-button:hover { color: #f1c40f; }
+        .delete-button:hover { color: #e74c3c; }
+        .add-task-button { background: #f1c40f; color: #1d1d1f; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transition: background-color 0.3s; }
+        .add-task-button:hover { background-color: #c49b0b; }
+        .timer { font-size: 1.2em; color: #bbbbbb; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Throne & Liberty Task List</h1>
+        <div class="checklist-container">
+            <div class="checklist">
+                <div class="timer" id="daily-timer">Daily reset in: </div>
+                <h2>Daily Tasks</h2>
+                <div id="daily-tasks"></div>
+                <button class="add-task-button" onclick="addTask('daily')">+</button>
+            </div>
+            <div class="checklist">
+                <div class="timer" id="weekly-timer">Weekly reset in: </div>
+                <h2>Weekly Tasks</h2>
+                <div id="weekly-tasks"></div>
+                <button class="add-task-button" onclick="addTask('weekly')">+</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load tasks from localStorage or use default tasks
+        let dailyTasks = JSON.parse(localStorage.getItem('dailyTasks')) || [
+            { task: "Sundries Merchant", completed: false },
+            { task: "Contract Coin Merchant", completed: false },
+            { task: "Guild Merchant", completed: false },
+            { task: "Guild Donation", completed: false },
+            { task: "Contracts", completed: false },
+            { task: "Dungeons", completed: false },
+            { task: "Open World Dungeons", completed: false },
+            { task: "Amitoi Expedition", completed: false }
+        ];
+
+        let weeklyTasks = JSON.parse(localStorage.getItem('weeklyTasks')) || [
+            { task: "Allied Resistance Forces Contract Scrolls", completed: false },
+            { task: "Gate of Infinity", completed: false },
+            { task: "Weekly Missions", completed: false }
+        ];
+
+        // Render tasks
+        function renderTasks() {
+            const dailyTasksDiv = document.getElementById('daily-tasks');
+            const weeklyTasksDiv = document.getElementById('weekly-tasks');
+
+            dailyTasksDiv.innerHTML = '';
+            weeklyTasksDiv.innerHTML = '';
+
+            dailyTasks.forEach((task, index) => {
+                dailyTasksDiv.innerHTML += `
+                    <div class="task-container">
+                        <input type="checkbox" id="daily-task-${index}" ${task.completed ? 'checked' : ''} onchange="toggleTask('daily', ${index})">
+                        <span class="task-text">${task.task}</span>
+                    </div>
+                `;
+            });
+
+            weeklyTasks.forEach((task, index) => {
+                weeklyTasksDiv.innerHTML += `
+                    <div class="task-container">
+                        <input type="checkbox" id="weekly-task-${index}" ${task.completed ? 'checked' : ''} onchange="toggleTask('weekly', ${index})">
+                        <span class="task-text">${task.task}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // Toggle task completion
+        function toggleTask(taskType, index) {
+            if (taskType === 'daily') {
+                dailyTasks[index].completed = !dailyTasks[index].completed;
+                localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+            } else if (taskType === 'weekly') {
+                weeklyTasks[index].completed = !weeklyTasks[index].completed;
+                localStorage.setItem('weeklyTasks', JSON.stringify(weeklyTasks));
+            }
+        }
+
+        // Add new task
+        function addTask(taskType) {
+            const newTask = prompt(`Enter a new ${taskType} task:`);
+            if (newTask) {
+                if (taskType === 'daily') {
+                    dailyTasks.push({ task: newTask, completed: false });
+                    localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+                } else if (taskType === 'weekly') {
+                    weeklyTasks.push({ task: newTask, completed: false });
+                    localStorage.setItem('weeklyTasks', JSON.stringify(weeklyTasks));
+                }
+                renderTasks();
+            }
+        }
+
+        // Reset tasks if necessary
+        function resetTasks() {
+            const lastDailyReset = localStorage.getItem('lastDailyReset');
+            const lastWeeklyReset = localStorage.getItem('lastWeeklyReset');
+
+            const now = new Date().getTime();
+            const oneDay = 24 * 60 * 60 * 1000;
+            const oneWeek = 7 * oneDay;
+
+            // Reset daily tasks at 1 PM UTC daily
+            if (!lastDailyReset || now - lastDailyReset > oneDay) {
+                dailyTasks.forEach(task => task.completed = false);
+                localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
+                localStorage.setItem('lastDailyReset', now);
+            }
+
+            // Reset weekly tasks every Wednesday at 1 PM UTC
+            if (!lastWeeklyReset || now - lastWeeklyReset > oneWeek) {
+                weeklyTasks.forEach(task => task.completed = false);
+                localStorage.setItem('weeklyTasks', JSON.stringify(weeklyTasks));
+                localStorage.setItem('lastWeeklyReset', now);
+            }
+        }
+
+        // Countdown timer logic
+        function updateCountdowns() {
+            const now = new Date();
+
+            const nextDailyReset = new Date(now);
+            nextDailyReset.setUTCHours(13, 0, 0, 0);
+            if (now > nextDailyReset) nextDailyReset.setUTCDate(nextDailyReset.getUTCDate() + 1);
+
+            const timeUntilDailyReset = nextDailyReset - now;
+            const dailyHours = Math.floor(timeUntilDailyReset / (1000 * 60 * 60));
+            const dailyMinutes = Math.floor((timeUntilDailyReset % (1000 * 60 * 60)) / (1000 * 60));
+            const dailySeconds = Math.floor((timeUntilDailyReset % (1000 * 60)) / 1000);
+            document.getElementById('daily-timer').textContent = `Daily reset in: ${dailyHours}h ${dailyMinutes}m ${dailySeconds}s`;
+
+            const nextWeeklyReset = new Date(nextDailyReset);
+            const daysUntilWednesday = (3 - nextWeeklyReset.getUTCDay() + 7) % 7;
+            nextWeeklyReset.setUTCDate(nextWeeklyReset.getUTCDate() + daysUntilWednesday);
+
+            const timeUntilWeeklyReset = nextWeeklyReset - now;
+            const weeklyDays = Math.floor(timeUntilWeeklyReset / (1000 * 60 * 60 * 24));
+            const weeklyHours = Math.floor((timeUntilWeeklyReset % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const weeklyMinutes = Math.floor((timeUntilWeeklyReset % (1000 * 60 * 60)) / (1000 * 60));
+            const weeklySeconds = Math.floor((timeUntilWeeklyReset % (1000 * 60)) / 1000);
+            document.getElementById('weekly-timer').textContent = `Weekly reset in: ${weeklyDays}d ${weeklyHours}h ${weeklyMinutes}m ${weeklySeconds}s`;
+        }
+
+        // Initialize
+        window.onload = function() {
+            resetTasks(); // Reset tasks if needed
+            renderTasks(); // Render tasks on page load
+            updateCountdowns(); // Initialize countdowns
+            setInterval(updateCountdowns, 1000); // Update countdown every second
+        };
+    </script>
+
+</body>
+</html>
