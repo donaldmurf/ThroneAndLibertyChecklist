@@ -3,55 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Throne & Liberty Task List</title>
-
+    <title>Guild Roster</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
-        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        h1 { text-align: center; font-size: 2.5em; color: #e0e0e0; margin-bottom: 20px; font-weight: 700; letter-spacing: 1px; }
-        .container { background-color: #2c2c2f; border-radius: 10px; padding: 20px; max-width: 1000px; width: 100%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
-        .checklist-container { display: flex; justify-content: space-between; }
-        .checklist { width: 48%; background-color: #333336; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-        h2 { font-size: 1.7em; color: #f5f5f5; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; font-weight: 600; }
-        .task-container { display: flex; align-items: center; justify-content: space-between; background-color: #1e1e20; border-radius: 5px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
-        .task-text { margin-left: 10px; flex: 1; color: #d9d9da; }
-        .edit-button, .delete-button { background: none; border: none; cursor: pointer; color: #a0a0a5; font-size: 1.2em; margin-left: 10px; transition: color 0.2s; }
-        .edit-button:hover { color: #f1c40f; }
-        .delete-button:hover { color: #e74c3c; }
+        body { font-family: 'Cinzel', serif; background-color: #1d1d1f; color: #f0f0f0; margin: 0; padding: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; }
+        .container { background-color: #2c2c2f; border-radius: 10px; padding: 20px; max-width: 95%; width: 95%; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); display: flex; justify-content: space-between; align-items: flex-start; }
+        .guild-roster, .groups-container { width: 48%; }
+        h2 { font-size: 1.7em; color: #f5f5f5; margin-bottom: 20px; text-align: center; }
+        .guild-roster-container, .groups-section { background-color: #333336; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
         .add-task-button { background: #f1c40f; color: #1d1d1f; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); transition: background-color 0.3s; }
         .add-task-button:hover { background-color: #c49b0b; }
-        .timer { font-size: 1.2em; color: #bbbbbb; text-align: center; margin-bottom: 10px; }
+        #roster-names, #groups-container { min-height: 300px; margin-bottom: 10px; padding: 10px; border: 1px solid #444; background-color: #1e1e20; max-height: 600px; overflow-y: auto; }
+        .roster-name, .group { padding: 8px; background-color: #444; margin: 5px 0; cursor: move; border-radius: 5px; color: #f0f0f0; position: relative; display: flex; justify-content: space-between; align-items: center; }
+        .group { background-color: #555; min-height: 50px; position: relative; }
+        .group-header { font-weight: bold; color: #f1c40f; margin-bottom: 5px; text-align: center; }
+        .edit-button, .delete-button { background: none; border: none; cursor: pointer; color: #f1c40f; margin-left: 5px; }
+        .edit-button:hover, .delete-button:hover { color: #e74c3c; }
     </style>
 </head>   
-   
-   
-   
-   
-   <!-- Guild Roster Section -->
-    <div class="guild-roster-container">
-        <h2>Guild Roster</h2>
-        <div id="roster-names"></div>
-        <button class="add-task-button" onclick="addGuildMember()">+</button>
 
-        <h2>Groups</h2>
-        <div id="groups-container"></div>
-        <button class="add-task-button" onclick="addGroup()">+</button>
+<body>
+    <div class="container">
+        <!-- Guild Roster Section (Left) -->
+        <div class="guild-roster">
+            <div class="guild-roster-container">
+                <h2>Guild Roster (<span id="roster-count">0</span>)</h2>
+                <div id="roster-names"></div>
+                <button class="add-task-button" onclick="addGuildMember()">+</button>
+            </div>
+        </div>
+
+        <!-- Groups Section (Right) -->
+        <div class="groups-container">
+            <div class="groups-section">
+                <h2>Groups</h2>
+                <div id="groups-container"></div>
+                <button class="add-task-button" onclick="addGroup()">+</button>
+            </div>
+        </div>
     </div>
-</div>
+
+    <script>
+        // Guild Roster and Groups logic
+        let guildRoster = [];
+        let groupCounter = 0;
+        let groupMembers = {}; // Object to track group memberships
+
+        // Add a guild member to the roster
+        function addGuildMember() {
+            const name = prompt("Enter guild member name:");
+            if (name) {
+                guildRoster.push(name);
+                renderGuildRoster();
+            }
+        }
+
+        // Render the guild roster with draggable names and edit/delete functionality
+        function renderGuildRoster() {
+            const rosterDiv = document.getElementById('roster-names');
+            rosterDiv.innerHTML = '';
+            guildRoster.forEach((name, index) => {
+                const nameElement = document.createElement('div');
+                nameElement.className = 'roster-name';
+                nameElement.id = `name-${index}`;
+                nameElement.draggable = true;
+                nameElement.setAttribute('ondragstart', 'drag(event)');
+
+                // Create a span for name editing
+                const nameSpan = document.createElement('span');
+                nameSpan.innerText = name;
+                nameElement.appendChild(nameSpan);
+
+                // Create Edit and Delete buttons
+                const editButton = document.createElement('button');
+                editButton.className = 'edit-button';
+                editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                editButton.onclick = () => editGuildMember(index);
+                nameElement.appendChild(editButton);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'delete-button';
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteButton.onclick = () => deleteGuildMember(index);
+                nameElement.appendChild(deleteButton);
+
+                rosterDiv.appendChild(nameElement);
+            });
+            updateRosterCount();
+        }
+
+        // Update roster count
+        function updateRosterCount() {
+            document.getElementById('roster-count').innerText = guildRoster.length;
+        }
+
+        // Edit guild member name
+        function editGuildMember(index) {
+            const newName = prompt("Edit guild member name:", guildRoster[index]);
+            if (newName) {
+                guildRoster[index] = newName;
+                renderGuildRoster();
+            }
+        }
+
+        // Delete guild member from the roster
+        function deleteGuildMember(index) {
+            // Remove from all groups before removing from roster
+            for (let groupId in groupMembers) {
+                groupMembers[groupId] = groupMembers[groupId].filter(memberIndex => memberIndex !== index);
+            }
+            guildRoster.splice(index, 1);
+            renderGuildRoster();
+        }
+
+        // Add a new group for drag and drop with a name
+        function addGroup() {
+            const groupName = prompt("Enter group name:");
+            if (groupName) {
+                const groupId = `group-${groupCounter++}`;
+                const groupElement = document.createElement('div');
+                groupElement.className = 'group';
+                groupElement.id = groupId;
+                groupElement.setAttribute('ondrop', 'drop(event)');
+                groupElement.setAttribute('ondragover', 'allowDrop(event)');
+
+                // Group header for the name
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'group-header';
+                const groupSpan = document.createElement('span');
+                groupSpan.innerText = groupName;
+                groupHeader.appendChild(groupSpan);
+
+                // Create Edit and Delete buttons for groups
+                const editGroupButton = document.createElement('button');
+                editGroupButton.className = 'edit-button';
+                editGroupButton.innerHTML = '<i class="fas fa-edit"></i>';
+                editGroupButton.onclick = () => editGroupName(groupSpan);
+                groupHeader.appendChild(editGroupButton);
+
+                const deleteGroupButton = document.createElement('button');
+                deleteGroupButton.className = 'delete-button';
+                deleteGroupButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                deleteGroupButton.onclick = () => deleteGroup(groupId);
+                groupHeader.appendChild(deleteGroupButton);
+
+                groupElement.appendChild(groupHeader);
+                document.getElementById('groups-container').appendChild(groupElement);
+
+                // Initialize group membership tracking
+                groupMembers[groupId] = [];
+            }
+        }
+
+        // Edit group name
+        function editGroupName(groupSpan) {
+            const newGroupName = prompt("Edit group name:", groupSpan.innerText);
+            if (newGroupName) {
+                groupSpan.innerText = newGroupName;
+            }
+        }
+
+        // Delete group
+        function deleteGroup(groupId) {
+            const groupElement = document.getElementById(groupId);
+            if (groupElement) {
+                groupElement.parentNode.removeChild(groupElement);
+                delete groupMembers[groupId]; // Remove group from tracking
+            }
+        }
+
+        // Drag and Drop Functions
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(data);
+            
+            // Check if the drop target is a group
+            if (event.target.classList.contains('group')) {
+                const groupId = event.target.id;
+                const memberIndex = draggedElement.id.split('-')[1]; // Get the index from ID
+
+                // Add the member to the group
+                if (!groupMembers[groupId].includes(parseInt(memberIndex))) {
+                    groupMembers[groupId].push(parseInt(memberIndex)); // Track the member in the group
+
+                    // Create a visual representation of the member in the group
+                    const memberElement = document.createElement('div');
+                    memberElement.className = 'roster-name'; // Same styling as the roster name
+                    memberElement.innerText = guildRoster[memberIndex]; // Display the name
+
+                    // Create Edit and Delete buttons for members in groups
+                    const editButton = document.createElement('button');
+                    editButton.className = 'edit-button';
+                    editButton.innerHTML = '<i class="fas fa-edit"></i>';
+                    editButton.onclick = () => editMemberInGroup(parseInt(memberIndex), groupId, memberElement);
+                    memberElement.appendChild(editButton);
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'delete-button';
+                    deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    deleteButton.onclick = () => deleteMemberFromGroup(memberIndex, groupId, memberElement);
+                    memberElement.appendChild(deleteButton);
+
+                    event.target.appendChild(memberElement); // Append the visual member to the group
+                }
+            }
+        }
+
+        // Edit member in group
+        function editMemberInGroup(memberIndex, groupId, memberElement) {
+            const newName = prompt("Edit member name:", guildRoster[memberIndex]);
+            if (newName) {
+                guildRoster[memberIndex] = newName; // Update the roster name
+                memberElement.firstChild.nodeValue = newName; // Update the displayed name in the group
+            }
+        }
+
+        // Delete member from group
+        function deleteMemberFromGroup(memberIndex, groupId, memberElement) {
+            groupMembers[groupId] = groupMembers[groupId].filter(index => index !== memberIndex); // Remove from group tracking
+            memberElement.parentNode.removeChild(memberElement); // Remove the visual representation from the group
+        }
+    </script>
+</body>
+</html>
